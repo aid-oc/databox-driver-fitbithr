@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %>, please input then necessary application credentials so we can associate
+    with your Moves account. You will need to follow the instructions to allow us to access
+    your data from the Moves mobile app when prompted. </p>
+
+    <form action="/databox-driver-moves/ui/auth" method="post" id="authForm">
+     Client ID: <input type="text" name="clientId"><br>
+     Client Secret: <input type="text" name="clientSecret"><br>
+     <input type="submit" value="Authenticate">
+   </form>
+
+  </body>
+</html>
