@@ -33,12 +33,12 @@ driverSettings.StoreType = 'kv';
 
 // Register hr data source
 var fitbitHr = databox.NewDataSourceMetadata();
-movesPlacesSource.Description = 'Fitbithr monthly hr data';
-movesPlacesSource.ContentType = 'application/json';
-movesPlacesSource.Vendor = 'psyao1';
-movesPlacesSource.DataSourceType = 'fitbitHr';
-movesPlacesSource.DataSourceID = 'fitbitHr';
-movesPlacesSource.StoreType = 'kv';
+fitbitHr.Description = 'Fitbithr monthly hr data';
+fitbitHr.ContentType = 'application/json';
+fitbitHr.Vendor = 'psyao1';
+fitbitHr.DataSourceType = 'fitbitHr';
+fitbitHr.DataSourceID = 'fitbitHr';
+fitbitHr.StoreType = 'kv';
 
 // Register Key-Value Store
 kvc.RegisterDatasource(driverSettings)
@@ -98,7 +98,7 @@ function storeToken(token) {
 };
 
 
-/** Stores the current Client ID/Client Secret for the Moves Application */
+/** Stores the current Client ID/Client Secret for the Fitbit Application */
 function storeAppCredentials(clientId, clientSecret) {
     return new Promise(function(resolve, reject) {
         var fitbitCredentials = {
