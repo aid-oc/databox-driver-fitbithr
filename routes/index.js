@@ -149,6 +149,8 @@ router.get('/', function(req, res, next) {
 router.post('/auth', function(req, res, next) {
     client.clientId = req.body.clientId;
     client.clientSecret = req.body.clientSecret;
+    console.log("Got Credentials from POST: " + req.body.clientId + ", " + req.body.clientSecret);
+    console.log("API Client: " + JSON.stringify(client));
     storeAppCredentials(client.clientId, client.clientSecret)
         .then((storeRes) => {
             let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
