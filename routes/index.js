@@ -59,7 +59,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
         .then((storedRes) => {
             console.log("Verify: Token found: " + storedRes.access_token);
             console.log("Verify: Refresh Token found: " + storedRes.refresh_token);
-            refreshAccessToken(storedRes.access_token, storedRes.refresh_token)
+            client.refreshAccessToken(storedRes.access_token, storedRes.refresh_token)
                 .then((refreshRes) => {
                     console.log("Refreshed token: " + refreshRes.access_token);
                     kvc.Write('fitbitToken', refreshRes)
