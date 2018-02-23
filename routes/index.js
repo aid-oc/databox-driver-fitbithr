@@ -148,7 +148,7 @@ router.get('/', function(req, res, next) {
 /** Auth route, will create an auth code and redirect to /authtoken, where a token is created and stored */
 router.post('/auth', function(req, res, next) {
     client.clientId = req.body.clientId;
-    client.clientId = req.body.clientSecret;
+    client.clientSecret = req.body.clientSecret;
     storeAppCredentials(client.clientId, client.clientId)
         .then((storeRes) => {
             let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
