@@ -86,14 +86,14 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
 function storeToken(token) {
     return new Promise(function(resolve, reject) {
         kvc.Write('fitbitToken', token)
-        .then((res) => {
-            console.log("Stored token..");
-            resolve(res);
-        })
-        .catch((err) => {
-            console.log("Failed to store token: " + err);
-            reject(err);
-        })
+            .then((res) => {
+                console.log("Stored token..");
+                resolve(res);
+            })
+            .catch((err) => {
+                console.log("Failed to store token: " + err);
+                reject(err);
+            })
     });
 };
 
@@ -132,9 +132,7 @@ router.get('/', function(req, res, next) {
             // Get latest data..
             res.render('settings', {
                 "title": "Fitbit HR Driver",
-                "profile": movesProfile,
-                "syncStatus": syncStatus,
-                "places": places
+                "syncStatus": "synced",
             });
         })
         .catch((tokenError) => {
@@ -169,12 +167,12 @@ router.get('/authtoken', function(req, res, next) {
         let token = result.access_token;
         let url = "https://localhost/databox-driver-fitbithr/ui/";
         storeToken(token)
-        .then((storeRes) => {
-            res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
-        })
-        .catch((storeErr) => {
-            res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
-        });
+            .then((storeRes) => {
+                res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
+            })
+            .catch((storeErr) => {
+                res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
+            });
     }).catch(err => {
         res.status(err.status).send(err);
     });
