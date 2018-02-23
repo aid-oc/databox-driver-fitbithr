@@ -1,10 +1,10 @@
 {
   "manifest-version": 1,
 
-  "name": "databox-driver-moves",
+  "name": "databox-driver-fitbithr",
   "version": "0.3.1",
 
-  "description": "Databox driver to gather data from the Moves API.",
+  "description": "Databox driver to gather heart rate data from the Fitbit API.",
   "author": "Aidan O'Connell <psyao1@nottingham.ac.uk> ()",
   "license": "MIT",
 
@@ -19,10 +19,10 @@
     "timeseries"
 ],
 
-  "homepage": "https://github.com/psyaoc/databox-driver-moves",
+  "homepage": "https://github.com/psyaoc/databox-driver-fitbithr",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/psyaoc/databox-driver-moves.git"
+    "url": "git+https://github.com/psyaoc/databox-driver-fitbithr.git"
   },
 
   "network-permissions": [
@@ -31,9 +31,9 @@
   "external-whitelist": [
         {
           "urls": [
-              "https://api.moves-app.com/"
+              "https://api.fitbit.com/"
           ],
-          "description": "Used to access the Moves API"
+          "description": "Used to access the Fitbit API"
         }
       ],
 

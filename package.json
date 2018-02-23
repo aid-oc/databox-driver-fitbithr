@@ -1,5 +1,5 @@
 {
-  "name": "databox-driver-moves",
+  "name": "databox-driver-fitbithr",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -11,11 +11,11 @@
     "debug": "^2.6.9",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
+    "fitbit-node": "^2.1.0",
     "moment": "^2.20.1",
-    "promise": "^7.1.1",
     "morgan": "^1.9.0",
-    "moves-api": "0.0.5",
     "node-databox": "^0.6.2",
+    "promise": "^7.1.1",
     "serve-favicon": "^2.4.5"
   }
 }
