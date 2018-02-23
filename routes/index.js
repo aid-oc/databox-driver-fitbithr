@@ -8,7 +8,7 @@ var FitbitApiClient = require('fitbit-node');
 
 var AUTH_REDIRECT_URL = "/#!/databox-driver-fitbithr/ui";
 
-const client = new FitbitApiClient({
+var client = new FitbitApiClient({
     clientId: "YOUR_CLIENT_ID",
     clientSecret: "YOUR_CLIENT_SECRET",
     apiVersion: '1.2'
