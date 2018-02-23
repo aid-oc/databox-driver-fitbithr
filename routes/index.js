@@ -149,7 +149,7 @@ router.get('/', function(req, res, next) {
 router.post('/auth', function(req, res, next) {
     client.clientId = req.body.clientId;
     client.clientSecret = req.body.clientSecret;
-    storeAppCredentials(client.clientId, client.clientId)
+    storeAppCredentials(client.clientId, client.clientSecret)
         .then((storeRes) => {
             let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
             let url = client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', callbackUrl);
