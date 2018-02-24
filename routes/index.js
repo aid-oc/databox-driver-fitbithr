@@ -55,7 +55,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
         .then((storedRes) => {
             console.log("Verify: Token found: " + storedRes.access_token);
             console.log("Verify: Refresh Token found: " + storedRes.refresh_token);
-            kvc.read('fitbitCredentials').then((credRes) => {
+            kvc.Read('fitbitCredentials').then((credRes) => {
                     // Construct API Client
                     client = new FitbitApiClient({
                         clientId: credRes.id,
