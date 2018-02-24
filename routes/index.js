@@ -56,6 +56,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
             console.log("Verify: Token found: " + storedRes.access_token);
             console.log("Verify: Refresh Token found: " + storedRes.refresh_token);
             kvc.Read('fitbitCredentials').then((credRes) => {
+                    console.log("Credentials Found: " + JSON.stringify(credRes));
                     // Construct API Client
                     client = new FitbitApiClient({
                         clientId: credRes.id,
@@ -81,7 +82,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
                         });
                 })
                 .catch((credErr) => {
-                    reject("No stored crendetials: " + credErr);
+                    reject("No stored credentials: " + credErr);
                 });
         })
         .catch((storedErr) => {
@@ -160,12 +161,12 @@ router.post('/auth', function(req, res, next) {
 
     client = new FitbitApiClient({
         clientId: req.body.clientId,
-        clientSecret: req.body.clientSecret,
+        clientSecret: req.body.clientId,
         apiVersion: '1.2'
     });
     console.log("Got Credentials from POST: " + req.body.clientId + ", " + req.body.clientSecret);
     console.log("API Client: " + JSON.stringify(client));
-    storeAppCredentials(client.clientId, client.clientSecret)
+    storeAppCredentials(req.body.clientId, req.body.clientId)
         .then((storeRes) => {
             let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
             let url = client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', callbackUrl);
