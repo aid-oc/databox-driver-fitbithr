@@ -155,6 +155,7 @@ router.post('/auth', function(req, res, next) {
         .then((storeRes) => {
             let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
             let url = client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', callbackUrl);
+            console.log("/auth redirecting to.." + url);
             res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
         })
         .catch((storeErr) => {
