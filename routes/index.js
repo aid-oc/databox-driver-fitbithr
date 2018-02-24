@@ -135,7 +135,9 @@ var getAppCredentials = new Promise(function(resolve, reject) {
 
 /** Driver home, will display data with a valid access token or begin authentication if necessary */
 router.get('/', function(req, res, next) {
+    console.log("At /");
     verifyAccessToken.then((token) => {
+        console.log("Got token, rendering");
             // Get latest data..
             res.render('settings', {
                 "title": "Fitbit HR Driver",
@@ -143,6 +145,7 @@ router.get('/', function(req, res, next) {
             });
         })
         .catch((tokenError) => {
+            console.log("verifyAccessToken failed...");
             // We do not have a valid token, begin auth process
             console.log(tokenError);
             // Prompt for ID/Secret
@@ -181,12 +184,15 @@ router.get('/authtoken', function(req, res, next) {
         let url = "https://localhost/databox-driver-fitbithr/ui/";
         storeToken(result)
             .then((storeRes) => {
+                console.log("(Stored Token) Redirecting to /ui");
                 res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
             })
             .catch((storeErr) => {
+                console.log("(Invalid Token) Redirecting to /ui");
                 res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
             });
     }).catch(err => {
+        console.log("(/authtoken) Error getting access token");
         res.status(err.status).send(err);
     });
 });
