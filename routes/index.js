@@ -178,9 +178,8 @@ router.post('/auth', function(req, res, next) {
 router.get('/authtoken', function(req, res, next) {
     let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
     client.getAccessToken(req.query.code, callbackUrl).then(result => {
-        let token = result.access_token;
         let url = "https://localhost/databox-driver-fitbithr/ui/";
-        storeToken(token)
+        storeToken(result)
             .then((storeRes) => {
                 res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
             })
