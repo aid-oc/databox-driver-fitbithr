@@ -8,11 +8,7 @@ var FitbitApiClient = require('fitbit-node');
 
 var AUTH_REDIRECT_URL = "/#!/databox-driver-fitbithr/ui";
 
-var client = new FitbitApiClient({
-    clientId: "YOUR_CLIENT_ID",
-    clientSecret: "YOUR_CLIENT_SECRET",
-    apiVersion: '1.2'
-});
+var client = {};
 
 const DATABOX_ZMQ_ENDPOINT = process.env.DATABOX_ZMQ_ENDPOINT;
 
@@ -59,22 +55,33 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
         .then((storedRes) => {
             console.log("Verify: Token found: " + storedRes.access_token);
             console.log("Verify: Refresh Token found: " + storedRes.refresh_token);
-            client.refreshAccessToken(storedRes.access_token, storedRes.refresh_token)
-                .then((refreshRes) => {
-                    console.log("Refreshed token: " + refreshRes.access_token);
-                    kvc.Write('fitbitToken', refreshRes)
-                        .then((writeRes) => {
-                            console.log("Updated stored token");
-                            resolve(refreshRes);
+            kvc.read('fitbitCredentials').then((credRes) => {
+                    // Construct API Client
+                    client = new FitbitApiClient({
+                        clientId: credRes.id,
+                        clientSecret: credRes.secret,
+                        apiVersion: '1.2'
+                    });
+                    client.refreshAccessToken(storedRes.access_token, storedRes.refresh_token)
+                        .then((refreshRes) => {
+                            console.log("Refreshed token: " + refreshRes.access_token);
+                            kvc.Write('fitbitToken', refreshRes)
+                                .then((writeRes) => {
+                                    console.log("Updated stored token");
+                                    resolve(refreshRes);
+                                })
+                                .catch((writeErr) => {
+                                    console.log("Error updating stored token: " + writeErr);
+                                    reject(writeErr);
+                                });
                         })
-                        .catch((writeErr) => {
-                            console.log("Error updating stored token: " + writeErr);
-                            reject(writeErr);
+                        .catch((refreshErr) => {
+                            console.log("Error refreshing token " + refreshErr);
+                            reject(refreshErr);
                         });
                 })
-                .catch((refreshErr) => {
-                    console.log("Error refreshing token " + refreshErr);
-                    reject(refreshErr);
+                .catch((credErr) => {
+                    reject("No stored crendetials: " + credErr);
                 });
         })
         .catch((storedErr) => {
@@ -147,8 +154,12 @@ router.get('/', function(req, res, next) {
 
 /** Auth route, will create an auth code and redirect to /authtoken, where a token is created and stored */
 router.post('/auth', function(req, res, next) {
-    client.clientId = req.body.clientId;
-    client.clientSecret = req.body.clientSecret;
+
+    client = new FitbitApiClient({
+        clientId: req.body.clientId,
+        clientSecret: req.body.clientSecret,
+        apiVersion: '1.2'
+    });
     console.log("Got Credentials from POST: " + req.body.clientId + ", " + req.body.clientSecret);
     console.log("API Client: " + JSON.stringify(client));
     storeAppCredentials(client.clientId, client.clientSecret)
