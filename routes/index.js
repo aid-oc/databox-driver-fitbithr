@@ -117,7 +117,7 @@ function storeAppCredentials(clientId, clientSecret) {
             id: clientId,
             secret: clientSecret
         };
-        kvc.Write('fitbitCredentials', fitbitCredentials).then(() => {
+        credvc.Write('fitbitCredentials', fitbitCredentials).then(() => {
             resolve();
         }).catch((err) => {
             console.log("Failed to store fitbitCredentials");
