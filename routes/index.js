@@ -166,9 +166,10 @@ router.get('/', function(req, res, next) {
                                     for (var m = moment(monthStart); m.diff(now, 'days') <= 0; monthStart.add(1, 'days')) {
                                         console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
                                         client.get("/activities/heart/date/today/1d/1min.json", newToken.access_token).then(results => {
-                                            console.log("Storing result of this iteration..");
+                                            console.log("Storing result of this iteration.." + JSON.stringify(results));
+                                            let currentDate = m.format("YYYY-MM-DD");
                                             let currentObject = {
-                                                date: m.format("YYYY-MM-DD"),
+                                                date: currentDate,
                                                 data: results
                                             };
                                             monthData.push(currentObject);
