@@ -15,19 +15,31 @@ const DATABOX_ZMQ_ENDPOINT = process.env.DATABOX_ZMQ_ENDPOINT;
 
 var kvc = databox.NewKeyValueClient(DATABOX_ZMQ_ENDPOINT, false);
 var credvc = databox.NewKeyValueClient(DATABOX_ZMQ_ENDPOINT, false);
+var hrvc = databox.NewKeyValueClient(DATABOX_ZMQ_ENDPOINT, false);
+
 
 let tsc = databox.NewTimeSeriesClient(DATABOX_ZMQ_ENDPOINT, false);
 
 
 // Set up data stores 
 // Configure Key-Value Store for Driver Settings
-var driverSettings = databox.NewDataSourceMetadata();
-driverSettings.Description = 'fitbithr driver settings';
-driverSettings.ContentType = 'application/json';
-driverSettings.Vendor = 'psyao1';
-driverSettings.DataSourceType = 'fitbithrSettings';
-driverSettings.DataSourceID = 'fitbithrSettings';
-driverSettings.StoreType = 'kv';
+var apiToken = databox.NewDataSourceMetadata();
+apiToken.Description = 'fitbithr driver token';
+apiToken.ContentType = 'application/json';
+apiToken.Vendor = 'psyao1';
+apiToken.DataSourceType = 'fitbitToken';
+apiToken.DataSourceID = 'fitbitToken';
+apiToken.StoreType = 'kv';
+
+
+var apiCreds = databox.NewDataSourceMetadata();
+apiCreds.Description = 'fitbithr driver credentials';
+apiCreds.ContentType = 'application/json';
+apiCreds.Vendor = 'psyao1';
+apiCreds.DataSourceType = 'fitbitCredentials';
+apiCreds.DataSourceID = 'fitbitCredentials';
+apiCreds.StoreType = 'kv';
+
 
 // Register hr data source
 var fitbitHr = databox.NewDataSourceMetadata();
@@ -39,9 +51,12 @@ fitbitHr.DataSourceID = 'fitbitHr';
 fitbitHr.StoreType = 'kv';
 
 // Register Key-Value Store
-kvc.RegisterDatasource(driverSettings)
+kvc.RegisterDatasource(apiToken)
     .then(() => {
-        return kvc.RegisterDatasource(fitbitHr);
+        return hrvc.RegisterDatasource(fitbitHr);
+    })
+    .then(() => {
+        return credvc.RegisterDatasource(apiCreds);
     })
     .catch((err) => {
         console.log("Error registering data source:" + err);
@@ -51,6 +66,7 @@ kvc.RegisterDatasource(driverSettings)
 
 /** Checks to see if we have an access token stored, this will then be verified and refreshed if necessary 
 (saves re-inputting client details each time */
+/*
 var verifyAccessToken = new Promise(function(resolve, reject) {
     let isValid = false;
     console.log("Reading fitbitToken...");
@@ -94,6 +110,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
             reject(storedErr);
         });
 });
+*/
 
 function storeToken(token) {
     return new Promise(function(resolve, reject) {
