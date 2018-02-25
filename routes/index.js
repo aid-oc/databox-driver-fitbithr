@@ -153,7 +153,7 @@ router.get('/', function(req, res, next) {
                     });
                     client.refreshAccessToken(token.access_token, token.refresh_token).then((newToken) => {
                             console.log("Refreshed Token: " + JSON.stringify(newToken));
-                            storeToken(parsedToken)
+                            storeToken(newToken)
                                 .then((storeRes) => {
                                     console.log("(Refresh Stored Token) Downloading data...");
                                     res.render('settings', {
