@@ -142,10 +142,45 @@ router.get('/', function(req, res, next) {
     kvc.Read('fitbitToken')
         .then((token) => {
             console.log("Got an access token: " + JSON.stringify(token));
-            res.render('settings', {
-                "title": "Fitbit HR Driver",
-                "syncStatus": "synced",
-            });
+            // Verify that the token is still valid
+            // Get Fitbit Credentials, attempt a refresh
+            getAppCredentials.then((credentials) => {
+                    console.log("Got credentials for verification: " + JSON.stringify(credentials));
+                    client = new FitbitApiClient({
+                        clientId: credentials.id,
+                        clientSecret: credentials.secret,
+                        apiVersion: '1.2'
+                    });
+                    client.refreshAccessToken(token.access_token, token.refresh_token).then((newToken) => {
+                            console.log("Refreshed Token: " + JSON.stringify(newToken));
+                            storeToken(parsedToken)
+                                .then((storeRes) => {
+                                    console.log("(Refresh Stored Token) Downloading data...");
+                                    res.render('settings', {
+                                        "title": "Fitbit HR Driver",
+                                        "syncStatus": "synced",
+                                    });
+                                })
+                                .catch((storeErr) => {
+                                    console.log("(Refresh Invalid Token) Redirecting to /ui");
+                                    res.render('index', {
+                                        "title": "Fitbit HR Driver"
+                                    });
+                                });
+                        })
+                        .catch((newTokenError) => {
+                            console.log("Failed to refresh token: " + newTokenError);
+                            res.render('index', {
+                                "title": "Fitbit HR Driver"
+                            });
+                        });
+                })
+                .catch((credentialsReadError) => {
+                    console.log("Failed to read credentials: " + credentialsReadError);
+                    res.render('index', {
+                        "title": "Fitbit HR Driver"
+                    });
+                });
         })
         .catch((readError) => {
             console.log("Failed to find access token: " + readError);
