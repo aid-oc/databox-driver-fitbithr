@@ -165,6 +165,8 @@ function downloadMonthlyData(token) {
         console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
         client.get("/activities/heart/date/" + m.format('YYYY-MM-DD') + "/1d/1min.json", token.access_token).then(results => {
             let currentDate = m.format("YYYY-MM-DD");
+            console.log("\n");
+            console.log(JSON.stringify(results[0]));
             let currentObject = {
                 date: currentDate,
                 data: results
