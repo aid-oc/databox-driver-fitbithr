@@ -186,7 +186,7 @@ router.get('/authtoken', function(req, res, next) {
     client.getAccessToken(req.query.code, callbackUrl).then(result => {
         let url = "https://localhost/databox-driver-fitbithr/ui/";
         console.log("Storing Token: " + JSON.stringify(result));
-        storeToken(result)
+        storeToken(JSON.parse(JSON.stringify(result)))
             .then((storeRes) => {
                 console.log("(Stored Token) Redirecting to /ui");
                 res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
