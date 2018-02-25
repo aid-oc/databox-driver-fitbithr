@@ -51,8 +51,10 @@ kvc.RegisterDatasource(driverSettings)
 (saves re-inputting client details each time */
 var verifyAccessToken = new Promise(function(resolve, reject) {
     let isValid = false;
+    console.log("Reading fitbitToken...";)
     kvc.Read('fitbitToken')
         .then((storedRes) => {
+            console.log("Fitbit Token Contents: " JSON.stringify(storedRes));
             console.log("Verify: Token found: " + storedRes.access_token);
             console.log("Verify: Refresh Token found: " + storedRes.refresh_token);
             kvc.Read('fitbitCredentials').then((credRes) => {
@@ -183,6 +185,7 @@ router.get('/authtoken', function(req, res, next) {
     let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
     client.getAccessToken(req.query.code, callbackUrl).then(result => {
         let url = "https://localhost/databox-driver-fitbithr/ui/";
+        console.log("Storing Token: " + JSON.stringify(result));
         storeToken(result)
             .then((storeRes) => {
                 console.log("(Stored Token) Redirecting to /ui");
