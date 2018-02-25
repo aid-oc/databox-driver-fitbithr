@@ -160,28 +160,24 @@ function downloadMonthlyData(token) {
     let monthStart = moment().format("YYYY-MM-01");
     let now = moment();
     let monthData = [];
-    // Loop over each day this month
-    for (var m = moment(monthStart); m.diff(now, 'days') <= 0; m.add(1, 'days')) {
-        console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
-        client.get("/activities/heart/date/" + m.format('YYYY-MM-DD') + "/1d/1min.json", token.access_token).then(results => {
-            let currentDate = m.format("YYYY-MM-DD");
-            console.log("\n");
-            console.log(JSON.stringify(results[0]));
-            let currentObject = {
-                date: currentDate,
-                data: results
-            };
-            monthData.push(currentObject);
-        }).catch(err => {
-            console.log(err);
-        });
-    }
-    console.log("Writing to store: " + JSON.stringify(monthData));
-    console.log("Finished iterating this month...");
-    kvc.Write('fitbitHr', monthData).then((res) => {
-        console.log("Stored correctly hr data: " + res);
-    }).catch((err) => {
-        console.log("Failed to store hr data: " + err);
+    return new Promise(function(resolve, reject) {
+        // Loop over each day this month
+        for (var m = moment(monthStart); m.diff(now, 'days') <= 0; m.add(1, 'days')) {
+            console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
+            client.get("/activities/heart/date/" + m.format('YYYY-MM-DD') + "/1d/1min.json", token.access_token).then(results => {
+                let currentDate = m.format("YYYY-MM-DD");
+                console.log("\n");
+                console.log(JSON.stringify(results[0]));
+                let currentObject = {
+                    date: currentDate,
+                    data: results
+                };
+                monthData.push(currentObject);
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+        resolve(monthData);
     });
 };
 
@@ -205,9 +201,20 @@ router.get('/', function(req, res, next) {
                             console.log("Refreshed Token");
                             res.render('settings', {
                                 "title": "Fitbit HR Driver",
-                                "syncStatus" : "synced"
+                                "syncStatus": "synced"
                             });
-                            downloadMonthlyData(newToken);
+                            downloadMonthlyData(newToken).then((monthlyData) => {
+                                    console.log("Writing to store: " + JSON.stringify(monthData));
+                                    console.log("Finished iterating this month...");
+                                    kvc.Write('fitbitHr', monthData).then((res) => {
+                                        console.log("Stored correctly hr data: " + res);
+                                    }).catch((err) => {
+                                        console.log("Failed to store hr data: " + err);
+                                    });
+                                })
+                                .catch((monthlyError) => {
+                                    console.log("Error downloading monthly hr data: " + monthlyError);
+                                });
                         })
                         .catch((newTokenError) => {
                             console.log("Failed to refresh token: " + newTokenError);
