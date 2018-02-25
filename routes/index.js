@@ -156,19 +156,33 @@ router.get('/', function(req, res, next) {
                             storeToken(newToken)
                                 .then((storeRes) => {
                                     console.log("(Refresh Stored Token) Downloading data...");
-                                    // Test request...
-                                    client.get("/activities/heart/date/today/1d.json", newToken.access_token).then(results => {
-                                        console.log("Heart Results for today: " + JSON.stringify(results));
-                                        res.render('settings', {
-                                            "title": "Fitbit HR Driver",
-                                            "syncStatus": "synced",
+
+                                    let monthStart = moment().format("YYYY-MM-01");
+                                    let now = moment();
+                                    let monthData = [];
+                                    // Loop over each day this month
+                                    for (var m = moment(monthStart); m.diff(now, 'days') <= 0; monthStart.add(1, 'days')) {
+                                        console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
+                                        client.get("/activities/heart/date/today/1d/1min.json", newToken.access_token).then(results => {
+                                            console.log("Storing result of this iteration..");
+                                            let currentObject = {
+                                                date: m.format("YYYY-MM-DD"),
+                                                data: results
+                                            }
+                                            monthData.push(currentObject);
+                                        }).catch(err => {
+                                            console.log(err);
+                                            res.render('settings', {
+                                                "title": "Fitbit HR Driver",
+                                                "syncStatus": "synced",
+                                            });
                                         });
-                                    }).catch(err => {
-                                        console.log(err);
-                                        res.render('settings', {
-                                            "title": "Fitbit HR Driver",
-                                            "syncStatus": "synced",
-                                        });
+                                    }
+                                    console.log("Finished iterating this month...");
+                                    kvc.Write('fitbitHr', monthData).then(() => {
+                                        console.log("Stored correctly hr data");
+                                    }).catch((err) => {
+                                        console.log("Failed to store hr data: " + err);
                                     });
                                 })
                                 .catch((storeErr) => {
