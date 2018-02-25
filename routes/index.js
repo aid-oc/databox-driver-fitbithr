@@ -179,8 +179,10 @@ function downloadMonthlyData(token) {
                     data: results
                 };
                 monthData.push(currentObject);
+                callback(null);
             }).catch(err => {
                 console.log(err);
+                callback(err);
             });
         }, function(err) {
             if (err) {
