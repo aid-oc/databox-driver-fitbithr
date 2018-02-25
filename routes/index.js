@@ -200,7 +200,7 @@ router.get('/', function(req, res, next) {
                         apiVersion: '1.2'
                     });
                     client.refreshAccessToken(token.access_token, token.refresh_token).then((newToken) => {
-                            console.log("Refreshed Token: " + JSON.stringify(newToken));
+                            console.log("Refreshed Token");
                             downloadMonthlyData();
                         })
                         .catch((newTokenError) => {
