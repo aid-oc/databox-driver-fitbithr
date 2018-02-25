@@ -51,7 +51,7 @@ kvc.RegisterDatasource(driverSettings)
 (saves re-inputting client details each time */
 var verifyAccessToken = new Promise(function(resolve, reject) {
     let isValid = false;
-    console.log("Reading fitbitToken...";)
+    console.log("Reading fitbitToken...");
     kvc.Read('fitbitToken')
         .then((storedRes) => {
             console.log("Fitbit Token Contents: " JSON.stringify(storedRes));
