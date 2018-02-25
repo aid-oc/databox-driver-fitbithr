@@ -201,21 +201,7 @@ router.get('/', function(req, res, next) {
                     });
                     client.refreshAccessToken(token.access_token, token.refresh_token).then((newToken) => {
                             console.log("Refreshed Token: " + JSON.stringify(newToken));
-                            storeToken(newToken)
-                                .then((storeRes) => {
-                                    console.log("(Refresh Stored Token) Downloading data...");
-                                    res.render('settings', {
-                                        "title": "Fitbit HR Driver",
-                                        "syncStatus": "synced",
-                                    });
-                                    downloadMonthlyData();
-                                })
-                                .catch((storeErr) => {
-                                    console.log("(Refresh Invalid Token) Redirecting to /ui");
-                                    res.render('index', {
-                                        "title": "Fitbit HR Driver"
-                                    });
-                                });
+                            downloadMonthlyData();
                         })
                         .catch((newTokenError) => {
                             console.log("Failed to refresh token: " + newTokenError);
