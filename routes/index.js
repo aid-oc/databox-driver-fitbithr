@@ -161,12 +161,12 @@ router.post('/auth', function(req, res, next) {
 
     client = new FitbitApiClient({
         clientId: req.body.clientId,
-        clientSecret: req.body.clientId,
+        clientSecret: req.body.clientSecret,
         apiVersion: '1.2'
     });
     console.log("Got Credentials from POST: " + req.body.clientId + ", " + req.body.clientSecret);
     console.log("API Client: " + JSON.stringify(client));
-    storeAppCredentials(req.body.clientId, req.body.clientId)
+    storeAppCredentials(req.body.clientId, req.body.clientSecret)
         .then((storeRes) => {
             let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
             let url = client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', callbackUrl);
