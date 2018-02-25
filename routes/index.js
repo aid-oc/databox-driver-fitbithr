@@ -139,6 +139,22 @@ var getAppCredentials = new Promise(function(resolve, reject) {
 /** Driver home, will display data with a valid access token or begin authentication if necessary */
 router.get('/', function(req, res, next) {
     console.log("At /");
+    kvc.Read('fitbitToken')
+        .then((token) => {
+            console.log("Got an access token: " + JSON.stringify(token));
+            res.render('settings', {
+                "title": "Fitbit HR Driver",
+                "syncStatus": "synced",
+            });
+        })
+        .catch((readError) => {
+            console.log("Failed to find access token: " + readError);
+            res.render('index', {
+                "title": "Fitbit HR Driver"
+            });
+        });
+
+    /*
     verifyAccessToken.then((token) => {
         console.log("Got token, rendering");
             // Get latest data..
@@ -156,6 +172,7 @@ router.get('/', function(req, res, next) {
                 "title": "Fitbit HR Driver"
             });
         });
+    */
 });
 
 /** Auth route, will create an auth code and redirect to /authtoken, where a token is created and stored */
