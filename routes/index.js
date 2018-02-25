@@ -95,7 +95,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
 
 function storeToken(token) {
     return new Promise(function(resolve, reject) {
-        kvc.Write('`', token)
+        kvc.Write('fitbitToken', token)
             .then((res) => {
                 console.log("Stored token..");
                 resolve(res);
