@@ -174,9 +174,10 @@ function downloadMonthlyData(token) {
             console.log(err);
         });
     }
+    console.log("Writing to store: " + JSON.stringify(monthData));
     console.log("Finished iterating this month...");
-    kvc.Write('fitbitHr', monthData).then(() => {
-        console.log("Stored correctly hr data");
+    kvc.Write('fitbitHr', monthData).then((res) => {
+        console.log("Stored correctly hr data: " + res);
     }).catch((err) => {
         console.log("Failed to store hr data: " + err);
     });
