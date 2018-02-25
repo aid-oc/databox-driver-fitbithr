@@ -192,7 +192,7 @@ router.get('/', function(req, res, next) {
             console.log("Got an access token: " + JSON.stringify(token));
             // Verify that the token is still valid
             // Get Fitbit Credentials, attempt a refresh
-            getAppCredentials.then((credentials) => {
+            getAppCredentials().then((credentials) => {
                     console.log("Got credentials for verification: " + JSON.stringify(credentials));
                     client = new FitbitApiClient({
                         clientId: credentials.id,
