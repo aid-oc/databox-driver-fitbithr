@@ -161,7 +161,7 @@ function downloadMonthlyData(token) {
     let now = moment();
     let monthData = [];
     // Loop over each day this month
-    for (var m = moment(monthStart); m.diff(now, 'days') <= 0; moment(monthStart).add(1, 'days')) {
+    for (var m = moment(monthStart); m.diff(now, 'days') <= 0; m.add(1, 'days')) {
         console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
         client.get("/activities/heart/date/" + m.format('YYYY-MM-DD') + "/1d/1min.json", token.access_token).then(results => {
             console.log("Storing result of this iteration.." + JSON.stringify(results));
