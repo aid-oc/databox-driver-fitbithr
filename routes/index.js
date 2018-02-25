@@ -4,6 +4,7 @@ var app = require('../app.js');
 var databox = require('node-databox');
 var moment = require('moment');
 var FitbitApiClient = require('fitbit-node');
+var async = require('async');
 
 
 var AUTH_REDIRECT_URL = "/#!/databox-driver-fitbithr/ui";
@@ -161,10 +162,15 @@ function downloadMonthlyData(token) {
     let now = moment();
     let monthData = [];
     return new Promise(function(resolve, reject) {
-        // Loop over each day this month
+        // Generate dates
+        let dates = [];
         for (var m = moment(monthStart); m.diff(now, 'days') <= 0; m.add(1, 'days')) {
-            console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
-            client.get("/activities/heart/date/" + m.format('YYYY-MM-DD') + "/1d/1min.json", token.access_token).then(results => {
+            dates.push(m.format('YYYY-MM-DD'));
+        }
+        // Async loop over each date, do API all, resolve promise when all complete
+        async.each(dates, function(date, callback) {
+            console.log("Current Iteration: " + date);
+            client.get("/activities/heart/date/" + date + "/1d/1min.json", token.access_token).then(results => {
                 let currentDate = m.format("YYYY-MM-DD");
                 console.log("\n");
                 console.log(JSON.stringify(results[0]));
@@ -176,8 +182,14 @@ function downloadMonthlyData(token) {
             }).catch(err => {
                 console.log(err);
             });
-        }
-        resolve(monthData);
+        }, function(err) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                resolve(monthData);
+            }
+        });
     });
 };
 
