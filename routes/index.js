@@ -156,9 +156,19 @@ router.get('/', function(req, res, next) {
                             storeToken(newToken)
                                 .then((storeRes) => {
                                     console.log("(Refresh Stored Token) Downloading data...");
-                                    res.render('settings', {
-                                        "title": "Fitbit HR Driver",
-                                        "syncStatus": "synced",
+                                    // Test request...
+                                    client.get("/activities/heart/date/today/1d.json", result.access_token).then(results => {
+                                        console.log("Heart Results for today: " + JSON.stringify(results));
+                                        res.render('settings', {
+                                            "title": "Fitbit HR Driver",
+                                            "syncStatus": "synced",
+                                        });
+                                    }).catch(err => {
+                                        console.log(err);
+                                        res.render('settings', {
+                                            "title": "Fitbit HR Driver",
+                                            "syncStatus": "synced",
+                                        });
                                     });
                                 })
                                 .catch((storeErr) => {
