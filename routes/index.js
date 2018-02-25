@@ -14,6 +14,8 @@ const DATABOX_ZMQ_ENDPOINT = process.env.DATABOX_ZMQ_ENDPOINT;
 
 
 var kvc = databox.NewKeyValueClient(DATABOX_ZMQ_ENDPOINT, false);
+var credvc = databox.NewKeyValueClient(DATABOX_ZMQ_ENDPOINT, false);
+
 let tsc = databox.NewTimeSeriesClient(DATABOX_ZMQ_ENDPOINT, false);
 
 
@@ -57,7 +59,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
             console.log("Fitbit Token Contents: " + JSON.stringify(storedRes));
             console.log("Verify: Token found: " + storedRes.access_token);
             console.log("Verify: Refresh Token found: " + storedRes.refresh_token);
-            kvc.Read('fitbitCredentials').then((credRes) => {
+            credvc.Read('fitbitCredentials').then((credRes) => {
                     console.log("Credentials Found: " + JSON.stringify(credRes));
                     // Construct API Client
                     client = new FitbitApiClient({
@@ -126,7 +128,7 @@ function storeAppCredentials(clientId, clientSecret) {
 
 /** Gets the current Client ID/Client Secret for the Fitbit Application */
 var getAppCredentials = new Promise(function(resolve, reject) {
-    kvc.Read('fitbitCredentials').then((res) => {
+    credvc.Read('fitbitCredentials').then((res) => {
         console.log("Credentials found: " + res);
         resolve(res);
     }).catch((err) => {
