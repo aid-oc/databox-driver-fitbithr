@@ -174,7 +174,7 @@ function downloadMonthlyData(token) {
                 console.log("\n");
                 console.log(JSON.stringify(results[0]));
                 let currentObject = {
-                    date: currentDate,
+                    date: date,
                     data: results
                 };
                 monthData.push(currentObject);
