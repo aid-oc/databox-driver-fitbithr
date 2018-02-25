@@ -204,9 +204,9 @@ router.get('/', function(req, res, next) {
                                 "syncStatus": "synced"
                             });
                             downloadMonthlyData(newToken).then((monthlyData) => {
-                                    console.log("Writing to store: " + JSON.stringify(monthData));
+                                    console.log("Writing to store: " + JSON.stringify(monthlyData));
                                     console.log("Finished iterating this month...");
-                                    kvc.Write('fitbitHr', monthData).then((res) => {
+                                    kvc.Write('fitbitHr', monthlyData).then((res) => {
                                         console.log("Stored correctly hr data: " + res);
                                     }).catch((err) => {
                                         console.log("Failed to store hr data: " + err);
