@@ -168,14 +168,10 @@ router.get('/', function(req, res, next) {
                                             let currentObject = {
                                                 date: m.format("YYYY-MM-DD"),
                                                 data: results
-                                            }
+                                            };
                                             monthData.push(currentObject);
                                         }).catch(err => {
                                             console.log(err);
-                                            res.render('settings', {
-                                                "title": "Fitbit HR Driver",
-                                                "syncStatus": "synced",
-                                            });
                                         });
                                     }
                                     console.log("Finished iterating this month...");
