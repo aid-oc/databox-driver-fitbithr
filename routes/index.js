@@ -144,15 +144,44 @@ function storeAppCredentials(clientId, clientSecret) {
 };
 
 /** Gets the current Client ID/Client Secret for the Fitbit Application */
-var getAppCredentials = new Promise(function(resolve, reject) {
-    credvc.Read('fitbitCredentials').then((res) => {
-        console.log("Credentials found: " + res);
-        resolve(res);
-    }).catch((err) => {
-        console.log("No credentials found: " + err);
-        reject(null);
+function getAppCredentials() {
+    return new Promise(function(resolve, reject) {
+        credvc.Read('fitbitCredentials').then((res) => {
+            console.log("Credentials found: " + res);
+            resolve(res);
+        }).catch((err) => {
+            console.log("No credentials found: " + err);
+            reject(null);
+        });
     });
-});
+};
+
+function downloadMonthlyData() {
+    let monthStart = moment().format("YYYY-MM-01");
+    let now = moment();
+    let monthData = [];
+    // Loop over each day this month
+    for (var m = moment(monthStart); m.diff(now, 'days') <= 0; monthStart.add(1, 'days')) {
+        console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
+        client.get("/activities/heart/date/" + m.format('YYYY-MM-DD') + "/1d/1min.json", newToken.access_token).then(results => {
+            console.log("Storing result of this iteration.." + JSON.stringify(results));
+            let currentDate = m.format("YYYY-MM-DD");
+            let currentObject = {
+                date: currentDate,
+                data: results
+            };
+            monthData.push(currentObject);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+    console.log("Finished iterating this month...");
+    kvc.Write('fitbitHr', monthData).then(() => {
+        console.log("Stored correctly hr data");
+    }).catch((err) => {
+        console.log("Failed to store hr data: " + err);
+    });
+};
 
 
 /** Driver home, will display data with a valid access token or begin authentication if necessary */
@@ -175,31 +204,11 @@ router.get('/', function(req, res, next) {
                             storeToken(newToken)
                                 .then((storeRes) => {
                                     console.log("(Refresh Stored Token) Downloading data...");
-
-                                    let monthStart = moment().format("YYYY-MM-01");
-                                    let now = moment();
-                                    let monthData = [];
-                                    // Loop over each day this month
-                                    for (var m = moment(monthStart); m.diff(now, 'days') <= 0; monthStart.add(1, 'days')) {
-                                        console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
-                                        client.get("/activities/heart/date/"+m.format('YYYY-MM-DD')+"/1d/1min.json", newToken.access_token).then(results => {
-                                            console.log("Storing result of this iteration.." + JSON.stringify(results));
-                                            let currentDate = m.format("YYYY-MM-DD");
-                                            let currentObject = {
-                                                date: currentDate,
-                                                data: results
-                                            };
-                                            monthData.push(currentObject);
-                                        }).catch(err => {
-                                            console.log(err);
-                                        });
-                                    }
-                                    console.log("Finished iterating this month...");
-                                    kvc.Write('fitbitHr', monthData).then(() => {
-                                        console.log("Stored correctly hr data");
-                                    }).catch((err) => {
-                                        console.log("Failed to store hr data: " + err);
+                                    res.render('settings', {
+                                        "title": "Fitbit HR Driver",
+                                        "syncStatus": "synced",
                                     });
+                                    downloadMonthlyData();
                                 })
                                 .catch((storeErr) => {
                                     console.log("(Refresh Invalid Token) Redirecting to /ui");
