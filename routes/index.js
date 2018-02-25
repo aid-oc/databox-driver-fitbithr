@@ -201,6 +201,10 @@ router.get('/', function(req, res, next) {
                     });
                     client.refreshAccessToken(token.access_token, token.refresh_token).then((newToken) => {
                             console.log("Refreshed Token");
+                            res.render('settings', {
+                                "title": "Fitbit HR Driver",
+                                "syncStatus" : "synced"
+                            });
                             downloadMonthlyData(newToken);
                         })
                         .catch((newTokenError) => {
