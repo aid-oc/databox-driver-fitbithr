@@ -157,7 +157,7 @@ router.get('/', function(req, res, next) {
                                 .then((storeRes) => {
                                     console.log("(Refresh Stored Token) Downloading data...");
                                     // Test request...
-                                    client.get("/activities/heart/date/today/1d.json", result.access_token).then(results => {
+                                    client.get("/activities/heart/date/today/1d.json", newToken.access_token).then(results => {
                                         console.log("Heart Results for today: " + JSON.stringify(results));
                                         res.render('settings', {
                                             "title": "Fitbit HR Driver",
