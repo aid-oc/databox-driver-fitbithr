@@ -54,7 +54,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
     console.log("Reading fitbitToken...");
     kvc.Read('fitbitToken')
         .then((storedRes) => {
-            console.log("Fitbit Token Contents: " JSON.stringify(storedRes));
+            console.log("Fitbit Token Contents: " + JSON.stringify(storedRes));
             console.log("Verify: Token found: " + storedRes.access_token);
             console.log("Verify: Refresh Token found: " + storedRes.refresh_token);
             kvc.Read('fitbitCredentials').then((credRes) => {
