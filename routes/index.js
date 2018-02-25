@@ -156,14 +156,14 @@ function getAppCredentials() {
     });
 };
 
-function downloadMonthlyData() {
+function downloadMonthlyData(token) {
     let monthStart = moment().format("YYYY-MM-01");
     let now = moment();
     let monthData = [];
     // Loop over each day this month
     for (var m = moment(monthStart); m.diff(now, 'days') <= 0; monthStart.add(1, 'days')) {
         console.log("Current Iteration: " + m.format('YYYY-MM-DD'));
-        client.get("/activities/heart/date/" + m.format('YYYY-MM-DD') + "/1d/1min.json", newToken.access_token).then(results => {
+        client.get("/activities/heart/date/" + m.format('YYYY-MM-DD') + "/1d/1min.json", token.access_token).then(results => {
             console.log("Storing result of this iteration.." + JSON.stringify(results));
             let currentDate = m.format("YYYY-MM-DD");
             let currentObject = {
@@ -201,7 +201,7 @@ router.get('/', function(req, res, next) {
                     });
                     client.refreshAccessToken(token.access_token, token.refresh_token).then((newToken) => {
                             console.log("Refreshed Token");
-                            downloadMonthlyData();
+                            downloadMonthlyData(newToken);
                         })
                         .catch((newTokenError) => {
                             console.log("Failed to refresh token: " + newTokenError);
