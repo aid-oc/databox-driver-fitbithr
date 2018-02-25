@@ -95,7 +95,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
 
 function storeToken(token) {
     return new Promise(function(resolve, reject) {
-        kvc.Write('fitbitToken', token)
+        kvc.Write('`', token)
             .then((res) => {
                 console.log("Stored token..");
                 resolve(res);
@@ -186,7 +186,9 @@ router.get('/authtoken', function(req, res, next) {
     client.getAccessToken(req.query.code, callbackUrl).then(result => {
         let url = "https://localhost/databox-driver-fitbithr/ui/";
         console.log("Storing Token: " + JSON.stringify(result));
-        storeToken(JSON.parse(JSON.stringify(result)))
+        let parsedToken = JSON.parse(JSON.stringify(result));
+        console.log("Parsed Token: " + JSON.stringify(parsedToken));
+        storeToken(parsedToken)
             .then((storeRes) => {
                 console.log("(Stored Token) Redirecting to /ui");
                 res.end('<html><body><p>Redirecting...</p><script>parent.location="' + url + '"</script></body></html>');
