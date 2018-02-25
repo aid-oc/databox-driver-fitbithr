@@ -171,7 +171,7 @@ function downloadMonthlyData(token) {
         async.each(dates, function(date, callback) {
             console.log("Current Iteration: " + date);
             client.get("/activities/heart/date/" + date + "/1d/1min.json", token.access_token).then(results => {
-                let currentDate = m.format("YYYY-MM-DD");
+                let currentDate = date.format("YYYY-MM-DD");
                 console.log("\n");
                 console.log(JSON.stringify(results[0]));
                 let currentObject = {
