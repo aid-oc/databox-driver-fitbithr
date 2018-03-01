@@ -158,7 +158,8 @@ function getAppCredentials() {
 };
 
 function downloadMonthlyData(token) {
-    let monthStart = moment().format("YYYY-MM-01");
+    //let monthStart = moment().format("YYYY-MM-01");
+    let monthStart = moment().subtract(28, 'day').format("YYYY-MM-DD");
     let now = moment();
     let monthData = [];
     return new Promise(function(resolve, reject) {
