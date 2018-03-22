@@ -115,7 +115,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
 
 function storeToken(token) {
     return new Promise(function(resolve, reject) {
-        kvc.Write('fitbitToken', token)
+        kvc.Write('fitbitToken', token, "JSON TEXT")
             .then((res) => {
                 console.log("Stored token..");
                 resolve(res);
@@ -147,7 +147,7 @@ function storeAppCredentials(clientId, clientSecret) {
 /** Gets the current Client ID/Client Secret for the Fitbit Application */
 function getAppCredentials() {
     return new Promise(function(resolve, reject) {
-        credvc.Read('fitbitCredentials').then((res) => {
+        credvc.Read('fitbitCredentials', "JSON TEXT").then((res) => {
             console.log("Credentials found: " + res);
             resolve(res);
         }).catch((err) => {
@@ -199,7 +199,7 @@ function downloadMonthlyData(token) {
 /** Driver home, will display data with a valid access token or begin authentication if necessary */
 router.get('/', function(req, res, next) {
     console.log("At /");
-    kvc.Read('fitbitToken')
+    kvc.Read('fitbitToken', "JSON TEXT")
         .then((token) => {
             console.log("Got an access token: " + JSON.stringify(token));
             // Verify that the token is still valid
@@ -220,7 +220,7 @@ router.get('/', function(req, res, next) {
                             downloadMonthlyData(newToken).then((monthlyData) => {
                                     console.log("Writing to store: " + JSON.stringify(monthlyData));
                                     console.log("Finished iterating this month...");
-                                    kvc.Write('fitbitHr', monthlyData).then((res) => {
+                                    kvc.Write('fitbitHr', monthlyData, "JSON TEXT").then((res) => {
                                         console.log("Stored correctly hr data: " + res);
                                     }).catch((err) => {
                                         console.log("Failed to store hr data: " + err);
