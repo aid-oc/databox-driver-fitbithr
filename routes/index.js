@@ -136,7 +136,7 @@ function storeAppCredentials(clientId, clientSecret) {
             secret: clientSecret
         };
         console.log("Storing: " + JSON.stringify(fitbitCredentials));
-        credvc.Write('fitbitCredentials', fitbitCredentials).then(() => {
+        credvc.Write('fitbitCredentials', JSON.stringify(fitbitCredentials)).then(() => {
             resolve();
         }).catch((err) => {
             console.log("Failed to store fitbitCredentials");
