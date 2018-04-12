@@ -298,7 +298,8 @@ router.post('/auth', function(req, res, next) {
 router.get('/authtoken', function(req, res, next) {
     let callbackUrl = "https://localhost/databox-driver-fitbithr/ui/authtoken";
     client.getAccessToken(req.query.code, callbackUrl).then(result => {
-        let url = "https://localhost/databox-driver-fitbithr/ui/";
+        let oldUrl = "https://localhost/databox-driver-fitbithr/ui/";
+        var url = "/#!/databox-driver-fitbithr/ui";
         console.log("Storing Token: " + JSON.stringify(result));
         let parsedToken = JSON.parse(JSON.stringify(result));
         console.log("Parsed Token: " + JSON.stringify(parsedToken));
