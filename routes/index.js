@@ -13,12 +13,10 @@ var client = {};
 
 const DATABOX_ZMQ_ENDPOINT = process.env.DATABOX_ZMQ_ENDPOINT;
 
-
+/* Use multiple clients for different data source access, makes incorrect source read much less frequent */
 var kvc = databox.NewKeyValueClient(DATABOX_ZMQ_ENDPOINT, false);
 var credvc = databox.NewKeyValueClient(DATABOX_ZMQ_ENDPOINT, false);
 var hrvc = databox.NewKeyValueClient(DATABOX_ZMQ_ENDPOINT, false);
-
-
 let tsc = databox.NewTimeSeriesClient(DATABOX_ZMQ_ENDPOINT, false);
 
 
@@ -31,8 +29,7 @@ apiToken.Vendor = 'psyao1';
 apiToken.DataSourceType = 'fitbitToken';
 apiToken.DataSourceID = 'fitbitToken';
 apiToken.StoreType = 'kv';
-
-
+// Configure Key-Value Store for Fitbit Credentials
 var apiCreds = databox.NewDataSourceMetadata();
 apiCreds.Description = 'fitbithr driver credentials';
 apiCreds.ContentType = 'application/json';
@@ -40,9 +37,7 @@ apiCreds.Vendor = 'psyao1';
 apiCreds.DataSourceType = 'fitbitCredentials';
 apiCreds.DataSourceID = 'fitbitCredentials';
 apiCreds.StoreType = 'kv';
-
-
-// Register hr data source
+// Configure Key-Value Store for Fitbit HR data
 var fitbitHr = databox.NewDataSourceMetadata();
 fitbitHr.Description = 'Fitbithr monthly hr data';
 fitbitHr.ContentType = 'application/json';
@@ -65,9 +60,10 @@ kvc.RegisterDatasource(apiToken)
 
 
 
-/** Checks to see if we have an access token stored, this will then be verified and refreshed if necessary 
-(saves re-inputting client details each time */
-/*
+// No longer necessary, however keeping the verification function for future use
+/* Checks to see if we have an access token stored, this will then be verified and refreshed if necessary 
+(saves re-inputting client details each time)
+
 var verifyAccessToken = new Promise(function(resolve, reject) {
     let isValid = false;
     console.log("Reading fitbitToken...");
@@ -113,6 +109,7 @@ var verifyAccessToken = new Promise(function(resolve, reject) {
 });
 */
 
+/* Stores the fitbit token object retrieved from the API */
 function storeToken(token) {
     return new Promise(function(resolve, reject) {
         kvc.Write('fitbitToken', token)
@@ -128,7 +125,7 @@ function storeToken(token) {
 };
 
 
-/** Stores the current Client ID/Client Secret for the Fitbit Application */
+/* Stores the current Client ID/Client Secret for the Fitbit Application */
 function storeAppCredentials(clientId, clientSecret) {
     return new Promise(function(resolve, reject) {
         var fitbitCredentials = {
@@ -144,7 +141,7 @@ function storeAppCredentials(clientId, clientSecret) {
     });
 };
 
-/** Gets the current Client ID/Client Secret for the Fitbit Application */
+/* Gets the current Client ID/Client Secret for the Fitbit Application */
 function getAppCredentials() {
     return new Promise(function(resolve, reject) {
         credvc.Read('fitbitCredentials').then((res) => {
@@ -157,6 +154,7 @@ function getAppCredentials() {
     });
 };
 
+/* Sends an API request for each day of HR data over a 27 day period, expects a valid Fitbit API token */
 function downloadMonthlyData(token) {
     //let monthStart = moment().format("YYYY-MM-01");
     let monthStart = moment().subtract(28, 'day').format("YYYY-MM-DD");
@@ -250,7 +248,7 @@ router.get('/', function(req, res, next) {
                 "title": "Fitbit HR Driver"
             });
         });
-
+    // No longer necessary, however keeping for future use (token swapping on user-change etc.)
     /*
     verifyAccessToken.then((token) => {
         console.log("Got token, rendering");
